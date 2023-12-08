@@ -1,3 +1,4 @@
+<!-- TuiGrid.vue -->
 <template>
   <!-- TuiGrid 컴포넌트의 템플릿 -->
   <div ref="tuiGrid" class="grid-container"></div>
@@ -28,6 +29,12 @@ export default {
       default() {
         return {};
       },
+    },
+  },
+  watch: {
+    data(newData) {
+      // 데이터가 변경될 때마다 그리드를 업데이트
+      this.gridInstance.resetData(newData);
     },
   },
   mounted() {
