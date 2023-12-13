@@ -38,38 +38,47 @@
 </template>
 
 <script>
-// 필요한 Vuex 매핑 및 메서드를 가져옴
-import { mapState, mapMutations } from 'vuex';
+import axios from 'axios'; // Axios 라이브러리 import
 
 export default {
-  computed: {
-    // Vuex 스토어에서 상태를 매핑하여 사용
-    ...mapState('grid', ['currentGridData']),
-  },
   data() {
-    // 컴포넌트의 데이터 영역: 새로운 댓글을 담는 변수
     return {
       newComment: '',
+      currentGridData: null,
     };
   },
   methods: {
-    // Vuex mutations을 매핑하여 사용
-    ...mapMutations('grid', ['addComment', 'deleteComment']),
-
     // 댓글 추가 메서드
     handleAddComment() {
       if (this.newComment && this.currentGridData) {
-        this.addComment({ gridId: this.currentGridData.id, comment: { text: this.newComment } });
-        this.newComment = ''; // 입력 필드 초기화
+        const listId = this.currentGridData.id;
+        axios.post(`/api/addComment/${listId}`, { listId: listId, comment: this.newComment })
+            .then(response => {
+              // 댓글 추가 성공 시 로컬 데이터 갱신
+              this.currentGridData.comments.push(response.data);
+              this.newComment = ''; // 입력 필드 초기화
+            })
+            .catch(error => {
+              console.error('Error adding comment:', error);
+            });
       }
     },
 
-    // 댓글 삭제 메서드
-    handleDeleteComment(commentId) {
-      if (this.currentGridData) {
-        this.deleteComment({ gridId: this.currentGridData.id, commentId });
-      }
+    // 데이터 받아오는 메서드
+    fetchData() {
+      const listId = this.$route.params.id; // 현재 라우터의 동적 파라미터로부터 ID를 가져옴
+      axios.get(`/api/getBoardList/${listId}`)
+          .then(response => {
+            this.currentGridData = response.data;
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+          });
     },
+  },
+  mounted() {
+    // 컴포넌트가 마운트된 후 데이터를 받아오는 메서드 호출
+    this.fetchData();
   },
 };
 </script>
