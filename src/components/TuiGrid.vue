@@ -5,6 +5,7 @@
 </template>
 
 <script>
+// git test
 // TuiGrid 라이브러리를 가져옴
 import Grid from 'tui-grid';
 
