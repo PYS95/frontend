@@ -6,6 +6,7 @@
 
 <script>
 // git test 0909909009090909
+// git test2
 // TuiGrid 라이브러리를 가져옴
 import Grid from 'tui-grid';
 
