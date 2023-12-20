@@ -77,7 +77,7 @@ export default {
     },
     getBoardList() {
       this.$axios
-          .get("/api/getBoardList")
+          .get("/api/boardList")
           .then((res) => {
             console.log(res.status)
             console.log(res.data)
