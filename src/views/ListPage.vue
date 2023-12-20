@@ -2,9 +2,9 @@
 <template>
   <!-- 페이지 목록 컴포넌트의 루트 엘리먼트 -->
   <div class="container">
-<!--    <div class="common-buttons">-->
-<!--      <button type="button" class="w3-button w3-round w3-blue-gray" v-on:click="fnWrite">등록</button>-->
-<!--    </div>-->
+    <!--    <div class="common-buttons">-->
+    <!--      <button type="button" class="w3-button w3-round w3-blue-gray" v-on:click="fnWrite">등록</button>-->
+    <!--    </div>-->
     <!-- TuiGrid 컴포넌트: 그리드 데이터를 표시하고 인터랙션을 제공-->
     <TuiGrid
         :data="gridData"
@@ -83,7 +83,7 @@ export default {
             console.log(res.data)
             this.gridData = res.data;
           });
-    },
+    }
   },
   mounted() {
     // 그리드 행을 클릭할 때 발생하는 이벤트 처리
