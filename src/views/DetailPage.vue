@@ -1,7 +1,11 @@
 <template>
   <!-- 상세 페이지 컴포넌트의 루트 엘리먼트 -->
   <div v-if="currentGridData" class="detail-page">
-
+    <div class="common-buttons">
+      <button type="button" class="w3-button w3-round w3-blue-gray">수정</button>&nbsp;
+      <button type="button" class="w3-button w3-round w3-red">삭제</button>&nbsp;
+      <router-link to="/" class="w3-button w3-round w3-gray">목록</router-link>
+    </div>
     <!-- 헤더 섹션: 제목과 작성자 정보 표시 -->
     <div class="header">
       <h1>{{ currentGridData.title }}</h1>
@@ -30,9 +34,6 @@
       <textarea v-model="newComment" placeholder="댓글을 입력하세요."></textarea>
       <button @click="handleAddComment">댓글 추가</button>
     </div>
-
-    <!-- 목록으로 돌아가는 링크 -->
-    <router-link to="/" class="back-link">목록으로 돌아가기</router-link>
 
   </div>
 </template>
