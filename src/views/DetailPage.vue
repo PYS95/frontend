@@ -172,13 +172,4 @@ export default {
   border: none;
   cursor: pointer;
 }
-
-/* 목록으로 돌아가는 링크 스타일 */
-.back-link {
-  display: block;
-  margin-top: 20px;
-  color: #3498db;
-  text-decoration: none;
-  text-align: center;
-}
 </style>

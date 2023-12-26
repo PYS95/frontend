@@ -4,7 +4,6 @@
     <PageHeader></PageHeader>
     <!-- 라우터 뷰로 현재 경로에 해당하는 컴포넌트를 렌더링 -->
     <router-view></router-view>
-    <PageFooter></PageFooter>
   </div>
 </template>
 
