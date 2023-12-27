@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import DetailPage from "@/views/DetailPage.vue";
 import ListPage from "@/views/ListPage.vue";
 import JoinPage from "@/views/JoinPage.vue";
+import BoardEditPage from "@/views/BoardEditPage.vue";
 
 // Vue Router 플러그인을 사용
 Vue.use(VueRouter);
@@ -24,6 +25,11 @@ const routes = [
       path: '/join',
       name: 'join',
       component: JoinPage,
+    },
+    {
+      path: '/edit',
+      name: 'edit',
+      component: BoardEditPage
     }
 ];
 

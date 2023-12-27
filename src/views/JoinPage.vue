@@ -6,13 +6,21 @@
       <br>
       <input v-model="password" type="password" placeholder="비밀번호"/>
       <br>
-      <button type="submit">제출</button>
+      <button type="submit">가입</button>
+      <router-link to="/">취소</router-link>
     </form>
   </div>
 </template>
 
 <script>
+import ListPage from "@/views/ListPage.vue";
+
 export default {
+  computed: {
+    ListPage() {
+      return ListPage
+    }
+  },
   data() {
     return {
       userid: '',

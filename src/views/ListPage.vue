@@ -3,8 +3,9 @@
   <!-- 페이지 목록 컴포넌트의 루트 엘리먼트 -->
   <div class="container">
     <div class="common-buttons">
-      <button type="button" class="w3-button w3-round w3-light-gray" @click="goToJoinPage">회원가입</button>
-      <button type="button" class="w3-button w3-round w3-blue-gray">등록</button>
+      <button type="button" class="w3-button w3-round w3-dark-gray" @click="goToJoinPage">회원가입</button>
+      <button type="button" class="w3-button w3-round w3-light-gray">로그인</button>
+      <button type="button" class="w3-button w3-round w3-blue-gray" @click="goToBoardEditPage">등록</button>
     </div>
     <!-- TuiGrid 컴포넌트: 그리드 데이터를 표시하고 인터랙션을 제공-->
     <TuiGrid
@@ -88,6 +89,10 @@ export default {
 
     goToJoinPage() {
       this.$router.push('/join')
+    },
+
+    goToBoardEditPage() {
+      this.$router.push('/edit')
     }
 
   },
