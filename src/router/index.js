@@ -18,7 +18,7 @@ const routes = [
         name: 'detail',
         component: DetailPage,
         props: true, // 라우트 매개변수를 컴포넌트의 props로 전달
-    }
+    },
 ];
 
 // Vue Router 인스턴스 생성
