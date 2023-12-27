@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import DetailPage from "@/views/DetailPage.vue";
 import ListPage from "@/views/ListPage.vue";
+import JoinPage from "@/views/JoinPage.vue";
 
 // Vue Router 플러그인을 사용
 Vue.use(VueRouter);
@@ -18,6 +19,11 @@ const routes = [
         name: 'detail',
         component: DetailPage,
         props: true, // 라우트 매개변수를 컴포넌트의 props로 전달
+    },
+    {
+      path: '/join',
+      name: 'join',
+      component: JoinPage,
     }
 ];
 
