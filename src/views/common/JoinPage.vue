@@ -2,7 +2,7 @@
   <div>
     <h2>회원가입</h2>
     <form @submit.prevent="submitForm">
-      <input v-model="userid" placeholder="아이디"/>
+      <input v-model="name" placeholder="아이디"/>
       <br>
       <input v-model="password" type="password" placeholder="비밀번호"/>
       <br>
@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      userid: '',
+      name: '',
       password: '',
     };
   },
@@ -31,7 +31,7 @@ export default {
     async submitForm() {
       try {
         const response = await this.$axios.post('/api/register', {
-          userid: this.userid,
+          name: this.name,
           password: this.password,
         });
 
