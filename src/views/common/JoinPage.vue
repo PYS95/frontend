@@ -2,9 +2,9 @@
   <div>
     <h2>회원가입</h2>
     <form @submit.prevent="submitForm">
-      <input v-model="name" placeholder="아이디"/>
+      <input v-model="user_id" type="text" placeholder="아이디 "/>
       <br>
-      <input v-model="password" type="password" placeholder="비밀번호"/>
+      <input v-model="user_pw" type="password" placeholder="비밀번호"/>
       <br>
       <button type="submit">가입</button>
       <router-link to="/">취소</router-link>
@@ -13,39 +13,37 @@
 </template>
 
 <script>
-import ListPage from "@/views/ListPage.vue";
+import axios from "axios";
 
 export default {
-  computed: {
-    ListPage() {
-      return ListPage
-    }
-  },
   data() {
     return {
-      name: '',
-      password: '',
+      user_id: '',
+      user_pw: '',
     };
   },
+
   methods: {
     async submitForm() {
       try {
-        const response = await this.$axios.post('/api/register', {
-          name: this.name,
-          password: this.password,
+        const response = await axios.post('http://localhost:8080/api/user/{user_id)', {
+          user_id: this.user_id,
+          user_pw: this.user_pw,
         });
 
-        console.log('회원가입 성공:', response.data);
-        this.$router.push('/' + this.userid + '/detail');
+        if (response.data.include("success")) {
+          alert(response.data);
+          this.$router.push('/');
+        } else {
+          console.log('회원가입 실패 : ', response.data);
+        }
       } catch (error) {
-        console.error('회원가입 실패:', error.response.data);
-        // 여기서 에러 처리를 원하는 대로 수행할 수 있습니다.
+        console.log('회원가입 실패 : ', error.response.data);
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style>
 </style>
-
