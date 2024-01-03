@@ -26,19 +26,19 @@ export default {
   methods: {
     async submitForm() {
       try {
-        const response = await axios.post('http://localhost:8080/api/user/{user_id)', {
-          user_id: this.user_id,
-          user_pw: this.user_pw,
+        const response = await axios.post('http://localhost:8080/api/user/' + this.user_id, {
+          userId: this.user_id,
+          userPw: this.user_pw,
         });
 
-        if (response.data.include("success")) {
+        if (response.data.includes("success")) {
           alert(response.data);
           this.$router.push('/');
         } else {
-          console.log('회원가입 실패 : ', response.data);
+          console.log(this.user_id, this.user_pw,'회원가입 실패 : ', response.data);
         }
       } catch (error) {
-        console.log('회원가입 실패 : ', error.response.data);
+        console.log(this.user_id, this.user_pw,'회원가입 실패 : ', error.response.data);
       }
     }
   }
