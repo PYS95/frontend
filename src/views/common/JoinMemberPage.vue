@@ -1,7 +1,8 @@
+<!--JoinMemberPage.vue-->
 <template>
   <div class="container">
     <div class="common-buttons">
-      <h5>{{user_id}}님 환영합니다.</h5>
+      <h5>{{ user_id }}님 환영합니다.</h5>
       <button type="button" class="w3-button w3-round w3-blue-gray" @click="goToBoardEditPage">게시글 등록</button>
     </div>
 
@@ -88,6 +89,7 @@ export default {
         this.openDetailPage(rowData);
       }
     });
+    // this.user_id = this.$router.params.user_id;
     this.getBoardList();
   },
 };

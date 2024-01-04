@@ -4,7 +4,7 @@
     <div class="common-buttons">
       <button type="button" class="w3-button w3-round w3-blue-gray">수정</button>&nbsp;
       <button type="button" class="w3-button w3-round w3-red">삭제</button>&nbsp;
-      <router-link to="/" class="w3-button w3-round w3-gray">목록</router-link>
+      <router-link to="/join/${this.user_id}" class="w3-button w3-round w3-gray">목록</router-link>
     </div>
     <!-- 헤더 섹션: 제목과 작성자 정보 표시 -->
     <div class="header">
