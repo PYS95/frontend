@@ -31,6 +31,7 @@ const routes = [
         path: '/join/:user_id',
         name: 'joinMember',
         component: JoinMemberPage,
+        props: true
     },
     {
       path: '/edit',
