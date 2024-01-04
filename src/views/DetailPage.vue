@@ -68,18 +68,24 @@ export default {
     // 데이터 받아오는 메서드
     fetchData() {
       const listId = this.$route.params.id; // 현재 라우터의 동적 파라미터로부터 ID를 가져옴
+      console.log('Fetching data for listId:', listId);
       axios.get(`/api/boardList/${listId}`)
           .then(response => {
             this.currentGridData = response.data;
           })
           .catch(error => {
             console.error('Error fetching data:', error);
+            console.error('Response data:', error.response.data);
           });
+    },
+    refreshData() {
+      this.fetchData();
     },
   },
   mounted() {
     // 컴포넌트가 마운트된 후 데이터를 받아오는 메서드 호출
     this.fetchData();
+    this.$root.$on('refreshData', this.refreshData);
   },
 };
 </script>

@@ -1,11 +1,10 @@
-<!-- ListPage.vue -->
 <template>
-  <!-- 페이지 목록 컴포넌트의 루트 엘리먼트 -->
   <div class="container">
+
     <div class="common-buttons">
-      <button type="button" class="w3-button w3-round w3-dark-gray" @click="goToJoinPage">회원가입</button>
+      <button type="button" class="w3-button w3-round w3-blue-gray" @click="goToBoardEditPage">등록</button>
     </div>
-    <!-- TuiGrid 컴포넌트: 그리드 데이터를 표시하고 인터랙션을 제공-->
+
     <TuiGrid
         :data="gridData"
         :columns="gridProps.columns"
@@ -17,7 +16,6 @@
 </template>
 
 <script>
-// 필요한 라이브러리 및 컴포넌트를 가져옴
 import 'tui-grid/dist/tui-grid.css';
 import 'tui-pagination/dist/tui-pagination.css';
 import TuiGrid from "@/components/TuiGrid.vue";
@@ -85,8 +83,8 @@ export default {
           });
     },
 
-    goToJoinPage() {
-      this.$router.push('/join')
+    goToBoardEditPage() {
+      this.$router.push('/edit')
     },
   },
   mounted() {

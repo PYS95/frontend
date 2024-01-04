@@ -22,27 +22,38 @@ export default {
       user_pw: '',
     };
   },
-
   methods: {
     async submitForm() {
+      // 입력값 검증
+      if (!this.user_id || !this.user_pw) {
+        alert("아이디와 비밀번호를 모두 입력해주세요.");
+        return;
+      }
+
       try {
-        const response = await axios.post('http://localhost:8080/api/user/' + this.user_id, {
-          userId: this.user_id,
-          userPw: this.user_pw,
-        });
+        // 회원가입 요청 보내기
+        const response = await axios.post(
+            'http://localhost:8080/api/user/' + this.user_id,
+            {
+              userId: this.user_id,
+              userPw: this.user_pw,
+            }
+        );
 
         if (response.data.includes("success")) {
-          alert(response.data);
-          this.$router.push('/');
+          console.log("회원가입 성공 : ", response.data);
+          alert(`${this.user_id}님 환영합니다!`);
         } else {
-          console.log(this.user_id, this.user_pw,'회원가입 실패 : ', response.data);
+          this.$router.push(`/join/${this.user_id}`);
+          console.log(response.data);
+          alert(response.data);
         }
       } catch (error) {
-        console.log(this.user_id, this.user_pw,'회원가입 실패 : ', error.response.data);
+        console.log("회원가입 실패 : ", error.response.data);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>
