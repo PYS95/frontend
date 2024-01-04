@@ -19,8 +19,7 @@ export default {
 </script>
 
 <style>
-/* 스타일링: 애플리케이션의 루트 엘리먼트에 대한 스타일 설정 */
 #app {
-  text-align: center; /* 텍스트 정렬을 가운데로 설정 */
+  text-align: center;
 }
 </style>
