@@ -7,6 +7,7 @@ import JoinPage from "@/views/JoinPage.vue";
 import BoardEditPage from "@/views/BoardEditPage.vue";
 import JoinMemberDetailPage from "@/views/Join/JoinMemberDetailPage.vue";
 import JoinMemberListPage from "@/views/Join/JoinMemberListPage.vue";
+import EditMyPage from "@/views/MyPage/EditMyPage.vue";
 
 // Vue Router 플러그인을 사용
 Vue.use(VueRouter);
@@ -45,6 +46,11 @@ const routes = [
       path: '/edit',
       name: 'boardEdit',
       component: BoardEditPage
+    },
+    {
+        path: '/myPage',
+        name: 'editMyPage',
+        component: EditMyPage
     }
 ];
 

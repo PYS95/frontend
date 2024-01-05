@@ -4,6 +4,7 @@
     <div class="common-buttons">
       <h5>{{ user_id }}님 환영합니다</h5>
       <button type="button" class="w3-button w3-round w3-blue-gray" @click="goToBoardEditPage">게시글 남기기</button>
+      <button type="button" class="w3-button w3-round w3-light-gray" @click="goToEditMyPage">마이페이지</button>
     </div>
 
     <TuiGrid
@@ -86,6 +87,10 @@ export default {
     goToBoardEditPage() {
       this.$router.push('/edit')
     },
+
+    goToEditMyPage() {
+      this.$router.push('/mypage')
+    }
   },
   mounted() {
     this.gridInstance.on('click', (ev) => {
