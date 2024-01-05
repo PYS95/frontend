@@ -7,7 +7,7 @@
       <br>
       <input v-model="user_pw" type="password" placeholder="비밀번호"/>
       <br>
-      <button type="submit">가입</button>
+      <button type="submit">가입</button>&nbsp;
       <router-link to="/">취소</router-link>
     </form>
   </div>
@@ -30,7 +30,6 @@ export default {
         alert("아이디와 비밀번호를 모두 입력해주세요.");
         return;
       }
-
       try {
         // 회원가입 요청 보내기
         const response = await axios.post(
@@ -40,7 +39,6 @@ export default {
               userPw: this.user_pw,
             }
         );
-
         if (response.data.includes("success")) {
           console.log("회원가입 성공 : ", response.data);
           alert(`${this.user_id}님 환영합니다!`);
@@ -51,6 +49,7 @@ export default {
         }
       } catch (error) {
         console.log("회원가입 실패 : ", error.response.data);
+        alert("회원가입 실패");
       }
     },
   },

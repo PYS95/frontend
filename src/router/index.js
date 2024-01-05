@@ -1,9 +1,10 @@
+// index.js
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import DetailPage from "@/views/DetailPage.vue";
 import ListPage from "@/views/ListPage.vue";
 import JoinPage from "@/views/common/JoinPage.vue";
-import BoardEditPage from "@/views/BoardEditPage.vue";
+import BoardEditPage from "@/views/common/BoardEditPage.vue";
 import JoinMemberPage from "@/views/common/JoinMemberPage.vue";
 
 // Vue Router 플러그인을 사용
