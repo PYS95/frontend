@@ -1,3 +1,4 @@
+<!--DetailPage.vue-->
 <template>
   <!-- 상세 페이지 컴포넌트의 루트 엘리먼트 -->
   <div v-if="currentGridData" class="detail-page">

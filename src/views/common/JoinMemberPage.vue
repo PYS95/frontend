@@ -2,8 +2,8 @@
 <template>
   <div class="container">
     <div class="common-buttons">
-      <h5>{{ user_id }}님 환영합니다.</h5>
-      <button type="button" class="w3-button w3-round w3-blue-gray" @click="goToBoardEditPage">게시글 등록</button>
+      <h5>{{ user_id }}님 환영합니다</h5>
+      <button type="button" class="w3-button w3-round w3-blue-gray" @click="goToBoardEditPage">게시글 남기기</button>
     </div>
 
     <TuiGrid
@@ -22,7 +22,7 @@ import 'tui-pagination/dist/tui-pagination.css';
 import TuiGrid from "@/components/TuiGrid.vue";
 
 export default {
-  name: "ListPage",
+  name: "JoinMemberPage",
   components: {
     TuiGrid,
   },
@@ -89,7 +89,7 @@ export default {
         this.openDetailPage(rowData);
       }
     });
-    // this.user_id = this.$router.params.user_id;
+    this.user_id = this.$route.params.user_id;
     this.getBoardList();
   },
 };
