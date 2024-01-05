@@ -1,4 +1,4 @@
-<!--JoinMemberPage.vue-->
+<!--JoinMemberListPage.vue-->
 <template>
   <div class="container">
     <div class="common-buttons">
@@ -22,7 +22,7 @@ import 'tui-pagination/dist/tui-pagination.css';
 import TuiGrid from "@/components/TuiGrid.vue";
 
 export default {
-  name: "JoinMemberPage",
+  name: "JoinMemberListPage",
   components: {
     TuiGrid,
   },
@@ -34,24 +34,29 @@ export default {
           {
             header: '제목',
             name: 'post_title',
-            sortingType: 'desc',
-            sortable: true,
+            align: 'center',
           },
           {
             header: '작성자',
             name: 'user_id',
-            sortingType: 'desc',
-            sortable: true,
+            align: 'center',
           },
           {
             header: '댓글 수',
             name: 'post_comment_cnt',
-            sortingType: 'desc',
-            sortable: true,
+            align: 'center',
           },
         ],
         options: {
-          rowHeaders: ['rowNum'],
+          options: {
+            headerHeight: 40,
+            rowHeight: 40,
+            showDummyRows: true,
+            bodyHeight: 400,
+            pageOptions: {
+              perPage: 10,
+            },
+          },
         },
       },
       gridData: [],
@@ -65,7 +70,7 @@ export default {
 
     openDetailPage(rowData) {
       if (rowData) {
-        this.$router.push(`/detail/${rowData.user_id}`);
+        this.$router.push(`/join/${rowData.user_id}/${rowData.post_no}`);
       }
     },
     getPostList() {

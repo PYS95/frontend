@@ -77,7 +77,7 @@ export default {
         this.$router.push(`/detail/${rowData.post_no}`);
       }
     },
-    getBoardList() {
+    getPostList() {
       this.$axios
           .get("/api/post/list")
           .then((res) => {
@@ -101,7 +101,7 @@ export default {
         this.openDetailPage(rowData);
       }
     });
-    this.getBoardList();
+    this.getPostList();
   },
 };
 </script>

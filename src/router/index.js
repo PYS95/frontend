@@ -3,9 +3,10 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import DetailPage from "@/views/DetailPage.vue";
 import ListPage from "@/views/ListPage.vue";
-import JoinPage from "@/views/common/JoinPage.vue";
-import BoardEditPage from "@/views/common/BoardEditPage.vue";
-import JoinMemberPage from "@/views/common/JoinMemberPage.vue";
+import JoinPage from "@/views/JoinPage.vue";
+import BoardEditPage from "@/views/BoardEditPage.vue";
+import JoinMemberDetailPage from "@/views/Join/JoinMemberDetailPage.vue";
+import JoinMemberListPage from "@/views/Join/JoinMemberListPage.vue";
 
 // Vue Router 플러그인을 사용
 Vue.use(VueRouter);
@@ -31,7 +32,13 @@ const routes = [
     {
         path: '/join/:user_id',
         name: 'joinMember',
-        component: JoinMemberPage,
+        component: JoinMemberListPage,
+        props: true
+    },
+    {
+        path: '/join/:user_id/:post_no',
+        name: 'joinMemberDetail',
+        component: JoinMemberDetailPage,
         props: true
     },
     {

@@ -5,7 +5,9 @@
     <form @submit.prevent="submitForm">
       <input v-model="user_id" type="text" placeholder="아이디 "/>
       <br>
+      <br>
       <input v-model="user_pw" type="password" placeholder="비밀번호"/>
+      <br>
       <br>
       <button type="submit">가입</button>&nbsp;
       <router-link to="/">취소</router-link>
