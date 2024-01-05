@@ -79,7 +79,7 @@ export default {
     },
     getBoardList() {
       this.$axios
-          .get("/api/board")
+          .get("/api/post/list")
           .then((res) => {
             console.log(res.status)
             console.log(res.data)

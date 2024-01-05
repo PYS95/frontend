@@ -33,19 +33,19 @@ export default {
         columns: [
           {
             header: '제목',
-            name: 'title',
+            name: 'post_title',
             sortingType: 'desc',
             sortable: true,
           },
           {
             header: '작성자',
-            name: 'name',
+            name: 'user_id',
             sortingType: 'desc',
             sortable: true,
           },
           {
             header: '댓글 수',
-            name: 'commentCount',
+            name: 'post_comment_cnt',
             sortingType: 'desc',
             sortable: true,
           },
@@ -65,12 +65,12 @@ export default {
 
     openDetailPage(rowData) {
       if (rowData) {
-        this.$router.push(`/detail/${rowData.id}`);
+        this.$router.push(`/detail/${rowData.user_id}`);
       }
     },
-    getBoardList() {
+    getPostList() {
       this.$axios
-          .get("/api/boardList")
+          .get("http://localhost:8080/api/post/list")
           .then((res) => {
             console.log(res.status)
             console.log(res.data)
@@ -85,12 +85,12 @@ export default {
   mounted() {
     this.gridInstance.on('click', (ev) => {
       const rowData = this.gridInstance.getRow(ev.rowKey);
-      if (ev.columnName === 'title' && rowData) {
+      if (ev.columnName === 'post_title' && rowData) {
         this.openDetailPage(rowData);
       }
     });
     this.user_id = this.$route.params.user_id;
-    this.getBoardList();
+    this.getPostList();
   },
 };
 </script>

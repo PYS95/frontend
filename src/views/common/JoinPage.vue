@@ -33,7 +33,7 @@ export default {
       try {
         // 회원가입 요청 보내기
         const response = await axios.post(
-            'http://localhost:8080/api/user/' + this.user_id,
+            "http://localhost:8080/api/user/" + this.user_id,
             {
               userId: this.user_id,
               userPw: this.user_pw,

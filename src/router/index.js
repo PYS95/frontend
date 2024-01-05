@@ -36,7 +36,7 @@ const routes = [
     },
     {
       path: '/edit',
-      name: 'edit',
+      name: 'boardEdit',
       component: BoardEditPage
     }
 ];

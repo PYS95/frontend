@@ -72,7 +72,7 @@ export default {
     fetchData() {
       const listId = this.$route.params.post_no; // 현재 라우터의 동적 파라미터로부터 post_no를 가져옴
       console.log('Fetching data for listId:', listId);
-      axios.get(`/api/board/${listId}`)
+      axios.get(`/api/post/${listId}`)
           .then(response => {
             this.currentGridData = response.data;
           })

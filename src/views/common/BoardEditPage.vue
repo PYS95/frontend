@@ -1,18 +1,15 @@
 <!--BoardEditPage.vue-->
 <template>
   <div>
-    <h2>게시판 생성</h2>
+    <h2>게시판 등록</h2>
     <form @submit.prevent="submitForm">
       <input v-model="post_title" type="text" class="w3-input w3-border" placeholder="제목"/>
-      <br>
-      <input v-model="user_id" type="text" class="w3-input w3-border" placeholder="작성자"/>
-      <br>
+      <input v-model="user_id" type="text" class="w3-input w3-border" placeholder="작성자" />
       <textarea v-model="post_content" class="w3-input w3-border" placeholder="내용"></textarea>
-      <br>
       <input v-model="post_pw" type="password" class="w3-input w3-border" placeholder="패스워드"/>
-      <br>
+      <br />
       <button type="submit" class="w3-button w3-round w3-blue-gray" @click="savePost">저장</button>&nbsp;
-      <router-link to="/join/:user_id">취소</router-link>
+      <router-link to="/join">취소</router-link>
     </form>
   </div>
 </template>
@@ -23,10 +20,13 @@ import axios from "axios";
 export default {
   data() {
     return {
-      post_title: '',
-      user_id: this.$router.params.user_id,
-      post_content: '',
-      post_pw: '',
+      requestBody: this.$route.query,
+      idx: this.$route.query.idx,
+
+      post_title: "",
+      user_id: "",
+      post_content: "",
+      post_pw: "",
     };
   },
   methods: {
@@ -37,7 +37,7 @@ export default {
       }
       try {
         const response = await axios.post(
-            `http://localhost:8080/api/board/${this.user_id}`,
+            "http://localhost:8080/api/post/${this.user_id}",
             {
               postTitle: this.post_title,
               userId: this.user_id,
@@ -51,7 +51,7 @@ export default {
         // 202(허용됨): 서버가 요청을 접수했지만 아직 처리하지 않았다.
 
         if (response.status === 201) {
-          this.$router.push('/board-list');
+          this.$router.push('/post/list');
         } else {
           alert("게시글 등록에 실패했습니다.");
         }
@@ -60,6 +60,9 @@ export default {
         alert("게시글 등록에 실패했습니다.");
       }
     },
+    savePost() {
+
+    }
   },
 };
 
