@@ -37,7 +37,7 @@ export default {
       }
       try {
         const response = await axios.post(
-            "http://localhost:8080/api/post/${this.user_id}",
+            `http://localhost:8080/api/post/${this.user_id}`,
             {
               postTitle: this.post_title,
               userId: this.user_id,
