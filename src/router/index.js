@@ -18,7 +18,7 @@ const routes = [
         component: ListPage,
     },
     {
-        path: '/detail/:id',
+        path: '/detail/:post_no',
         name: 'detail',
         component: DetailPage,
         props: true, // 라우트 매개변수를 컴포넌트의 props로 전달

@@ -65,9 +65,4 @@ export default {
 </script>
 
 <style scoped>
-.grid-container {
-  /* 필요한 스타일 속성 추가 */
-  width: 100%;
-  height: 100%;
-}
 </style>
