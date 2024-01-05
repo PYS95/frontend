@@ -45,13 +45,19 @@ export default {
           },
           {
             header: '댓글 수',
-            name: 'post_comment_count',
+            name: 'post_comment_cnt',
             align: 'center',
           },
         ],
         //그리드의 기타 옵션 설정
         options: {
-          rowHeaders: ['rowNum'],
+          headerHeight: 40,
+          rowHeight: 40,
+          showDummyRows: true,
+          bodyHeight: 400,
+          pageOptions: {
+            perPage: 10,
+          },
         },
       },
       gridData: [],
@@ -68,7 +74,7 @@ export default {
     openDetailPage(rowData) {
       if (rowData) {
         // Vue Router를 사용하여 상세 페이지로 이동
-        this.$router.push(`/detail/${rowData.id}`);
+        this.$router.push(`/detail/${rowData.post_no}`);
       }
     },
     getBoardList() {
@@ -91,7 +97,7 @@ export default {
       const rowData = this.gridInstance.getRow(ev.rowKey);
 
       // '제목' 열을 클릭하면 상세 페이지로 이동하는 메소드 호출
-      if (ev.columnName === 'title' && rowData) {
+      if (ev.columnName === 'post_title' && rowData) {
         this.openDetailPage(rowData);
       }
     });
