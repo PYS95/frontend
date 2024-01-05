@@ -35,21 +35,18 @@ export default {
         columns: [
           {
             header: '제목',
-            name: 'title',
-            sortingType: 'desc',
-            sortable: true,
+            name: 'post_title',
+            align: 'center',
           },
           {
             header: '작성자',
-            name: 'name',
-            sortingType: 'desc',
-            sortable: true,
+            name: 'user_id',
+            align: 'center',
           },
           {
             header: '댓글 수',
-            name: 'commentCount',
-            sortingType: 'desc',
-            sortable: true,
+            name: 'post_comment_count',
+            align: 'center',
           },
         ],
         //그리드의 기타 옵션 설정
@@ -70,14 +67,13 @@ export default {
     // 상세 페이지로 이동하는 메소드
     openDetailPage(rowData) {
       if (rowData) {
-        // this.setCurrentGridData(rowData.id);
         // Vue Router를 사용하여 상세 페이지로 이동
         this.$router.push(`/detail/${rowData.id}`);
       }
     },
     getBoardList() {
       this.$axios
-          .get("/api/boardList")
+          .get("/api/board")
           .then((res) => {
             console.log(res.status)
             console.log(res.data)
