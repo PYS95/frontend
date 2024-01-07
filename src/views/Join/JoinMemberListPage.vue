@@ -3,7 +3,7 @@
   <div class="container">
     <div class="common-buttons">
       <h5>{{ user_id }}님 환영합니다</h5>
-      <button type="button" class="w3-button w3-round w3-blue-gray" @click="goToBoardEditPage">게시글 남기기</button>
+      <button type="button" class="w3-button w3-round w3-blue-gray" @click="goToBoardEditPage">게시글 남기기</button>&nbsp;
       <button type="button" class="w3-button w3-round w3-light-gray" @click="goToEditMyPage">마이페이지</button>
     </div>
 
@@ -89,7 +89,13 @@ export default {
     },
 
     goToEditMyPage() {
-      this.$router.push('/mypage')
+      this.$router.push({
+        path: '/mypage',
+        query: {
+          user_id: this.user_id,
+          user_pw: '',
+        },
+      });
     }
   },
   mounted() {

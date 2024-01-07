@@ -1,4 +1,4 @@
-<!--JoinPage.vue-->
+<!-- JoinPage.vue -->
 <template>
   <div>
     <h2>회원가입</h2>
@@ -35,22 +35,28 @@ export default {
       try {
         // 회원가입 요청 보내기
         const response = await axios.post(
-            "http://localhost:8080/api/user/" + this.user_id,
+            `http://localhost:8080/api/user/${this.user_id}`,
             {
-              userId: this.user_id,
-              userPw: this.user_pw,
+              user_id: this.user_id,
+              user_pw: this.user_pw,
             }
         );
-        if (response.data.includes("success")) {
-          console.log("회원가입 성공 : ", response.data);
+        if (response.status === 201) {
+          console.log("회원가입 성공: ", response.data);
           alert(`${this.user_id}님 환영합니다!`);
+
+          // 회원가입 성공 후 페이지 이동
+          // user_id를 다음 route로 전달
+          this.$router.push({
+            path: `/join/${this.user_id}`,
+            params: { user_id: this.user_id },
+          });
         } else {
-          this.$router.push(`/join/${this.user_id}`);
-          console.log(response.data);
+          console.log("회원가입 실패: ", response.data);
           alert(response.data);
         }
       } catch (error) {
-        console.log("회원가입 실패 : ", error.response.data);
+        console.error("회원가입 실패: ", error.response.data);
         alert("회원가입 실패");
       }
     },

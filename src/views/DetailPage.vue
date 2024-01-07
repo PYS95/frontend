@@ -3,7 +3,7 @@
   <!-- 상세 페이지 컴포넌트의 루트 엘리먼트 -->
   <div v-if="currentGridData" class="detail-page">
     <div class="common-buttons">
-      <router-link to="/" class="w3-button w3-round w3-gray">목록</router-link>
+      <button type="button" class="w3-button w3-round w3-gray" @click="goBack">목록</button>&nbsp;
     </div>
     <!-- 헤더 섹션: 제목과 작성자 정보 표시 -->
     <div class="header">
@@ -55,6 +55,9 @@ export default {
     },
     refreshData() {
       this.fetchData();
+    },
+    goBack() {
+      this.$router.go(-1);
     },
   },
   mounted() {

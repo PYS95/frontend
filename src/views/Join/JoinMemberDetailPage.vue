@@ -5,7 +5,7 @@
     <div class="common-buttons">
       <button type="button" class="w3-button w3-round w3-blue-gray">수정</button>&nbsp;
       <button type="button" class="w3-button w3-round w3-red">삭제</button>&nbsp;
-      <router-link to="/join/${this.user_id}" class="w3-button w3-round w3-gray">목록</router-link>
+      <button type="button" class="w3-button w3-round w3-gray" @click="goBack">목록</button>
     </div>
     <!-- 헤더 섹션: 제목과 작성자 정보 표시 -->
     <div class="header">
@@ -20,7 +20,7 @@
     </div>
 
     <!-- 댓글 섹션: 댓글 목록과 추가, 삭제 기능 제공 -->
-<!--    수정이 필요함.-->
+    <!--    수정이 필요함.-->
     <h2>댓글</h2>
     <div v-if="currentGridData.comment" class="comment">
       <div v-for="comment in currentGridData.comment" :key="comment.user_id" class="comment">
@@ -56,7 +56,7 @@ export default {
     handleAddComment() {
       if (this.newComment && this.currentGridData) {
         const listId = this.currentGridData.id;
-        axios.post(`/api/addComment/${listId}`, { listId: listId, comment_content: this.newComment })
+        axios.post(`/api/addComment/${listId}`, {listId: listId, comment_content: this.newComment})
             .then(response => {
               // 댓글 추가 성공 시 로컬 데이터 갱신
               this.currentGridData.comment_content.push(response.data);
@@ -83,6 +83,9 @@ export default {
     },
     refreshData() {
       this.fetchData();
+    },
+    goBack() {
+      this.$router.go(-1);
     },
   },
   mounted() {

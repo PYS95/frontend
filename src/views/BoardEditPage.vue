@@ -9,7 +9,7 @@
       <input v-model="post_pw" type="password" class="w3-input w3-border" placeholder="패스워드"/>
       <br />
       <button type="submit" class="w3-button w3-round w3-blue-gray" @click="savePost">저장</button>&nbsp;
-      <router-link to="/join/{user_id}">취소</router-link>
+      <button type="button" class="w3-button w3-round w3-light-gray" @click="goBack">취소</button>&nbsp;
     </form>
   </div>
 </template>
@@ -62,7 +62,10 @@ export default {
     },
     savePost() {
 
-    }
+    },
+    goBack() {
+      this.$router.go(-1);
+    },
   },
 };
 
