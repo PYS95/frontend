@@ -1,4 +1,3 @@
-<!-- JoinPage.vue -->
 <template>
   <div>
     <h2>회원가입</h2>
@@ -44,6 +43,9 @@ export default {
         if (response.status === 201) {
           console.log("회원가입 성공: ", response.data);
           alert(`${this.user_id}님 환영합니다!`);
+
+          // 회원가입 성공 후 로컬 스토리지에 정보 저장
+          localStorage.setItem('userId', this.user_id);
 
           // 회원가입 성공 후 페이지 이동
           // user_id를 다음 route로 전달
