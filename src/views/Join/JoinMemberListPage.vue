@@ -6,14 +6,17 @@
       <button type="button" class="w3-button w3-round w3-blue-gray" @click="goToBoardEditPage">게시글 남기기</button>&nbsp;
       <button type="button" class="w3-button w3-round w3-light-gray" @click="goToEditMyPage">마이페이지</button>
     </div>
-
-    <TuiGrid
-        :data="gridData"
-        :columns="gridProps.columns"
-        :options="gridProps.options"
-        class="custom-grid"
-        @grid-instance="handleGridInstance"
-    ></TuiGrid>
+    <div class="CheckboxRender">
+      <TuiGrid
+          :data="gridData"
+          :columns="gridProps.columns"
+          :options="gridProps.options"
+          :rowHeaders="gridProps.rowHeaders"
+          class="custom-grid"
+          @grid-instance="handleGridInstance"
+      ></TuiGrid>
+      <button type="button" class="w3-button w3-round w3-red bottom-left" @click="deleteSelectedRow">삭제</button>
+    </div>
   </div>
 </template>
 
@@ -49,18 +52,19 @@ export default {
           },
         ],
         options: {
-          options: {
-            headerHeight: 40,
-            rowHeight: 40,
-            showDummyRows: true,
-            bodyHeight: 400,
-            pageOptions: {
-              perPage: 10,
-            },
+          scrollX: false,
+          scrollY: false,
+          headerHeight: 40,
+          rowHeight: 40,
+          showDummyRows: true,
+          bodyHeight: 400,
+          pageOptions: {
+            perPage: 10,
           },
         },
       },
       gridData: [],
+      checkedRows: [], // 체크된 행의 인덱스를 저장하는 배역
       gridInstance: null,
     };
   },
@@ -74,6 +78,28 @@ export default {
         this.$router.push(`/join/${rowData.user_id}/${rowData.post_no}`);
       }
     },
+
+    deleteSelectedRow() {
+
+      if(this.checkedRows.length === 0) {
+        alert('삭제할 게시글을 선택해주세요.');
+        return;
+      }
+
+      const selectedRows = this.gridInstance.getCheckedRows();
+      if (selectedRows.length === 0) {
+        alert('삭제할 게시글을 선택해주세요.');
+        return;
+      }
+
+      const confirmDelete = window.confirm("선택한 항목을 삭제하시겠습니까?");
+      if (confirmDelete) {
+        const rowKeysToDelete = selectedRows.map(row => row.rowKey);
+        this.gridInstance.removeCheckedRows();
+        console.log("삭제된 행의 rowKey: ", rowKeysToDelete);
+      }
+    },
+
     getPostList() {
       this.$axios
           .get("http://localhost:8080/api/post/list")
@@ -112,4 +138,9 @@ export default {
 </script>
 
 <style>
+.bottom-left {
+  position: fixed;
+  bottom: 500px;
+  left: 10px;
+}
 </style>

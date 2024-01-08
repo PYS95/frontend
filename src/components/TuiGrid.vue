@@ -39,8 +39,7 @@ export default {
       });
       this.gridInstance = new Grid(option);
       this.$emit('grid-instance', this.gridInstance);
-    }
-    catch (error) {
+    } catch (error) {
       console.error('그리드 초기화 중 오류 발생:', error);
     }
   },

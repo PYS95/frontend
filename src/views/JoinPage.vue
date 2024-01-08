@@ -2,14 +2,16 @@
   <div>
     <h2>회원가입</h2>
     <form @submit.prevent="submitForm">
-      <input v-model="user_id" type="text" placeholder="아이디 "/>
+      <input v-model="user_id" type="text" placeholder="아이디"
+             style="width:500px; height:50px; margin-left: auto; margin-right: auto"/>
       <br>
       <br>
-      <input v-model="user_pw" type="password" placeholder="비밀번호"/>
+      <input v-model="user_pw" type="password" placeholder="비밀번호"
+             style="width:500px; height:50px; margin-left: auto; margin-right: auto"/>
       <br>
       <br>
-      <button type="submit">가입</button>&nbsp;
-      <router-link to="/">취소</router-link>
+      <button type="submit" class="w3-button w3-round w3-blue-gray">가입</button>&nbsp;
+      <button type="button" class="w3-button w3-round w3-light-gray" @click="goBack">취소</button>
     </form>
   </div>
 </template>
@@ -51,7 +53,7 @@ export default {
           // user_id를 다음 route로 전달
           this.$router.push({
             path: `/join/${this.user_id}`,
-            params: { user_id: this.user_id },
+            params: {user_id: this.user_id},
           });
         } else {
           console.log("이미 존재하는 아이디입니다. : ", response.data);
@@ -61,6 +63,9 @@ export default {
         console.error("회원가입 실패: ", error.response.data);
         alert("회원가입 실패");
       }
+    },
+    goBack() {
+      this.$router.go(-1);
     },
   },
 };

@@ -51,11 +51,13 @@ export default {
         ],
         //그리드의 기타 옵션 설정
         options: {
+
           headerHeight: 40,
           rowHeight: 40,
           showDummyRows: true,
           bodyHeight: 400,
           pageOptions: {
+            useClient: true,
             perPage: 10,
           },
         },
@@ -107,4 +109,5 @@ export default {
 </script>
 
 <style>
+
 </style>

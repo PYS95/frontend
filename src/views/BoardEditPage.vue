@@ -59,7 +59,7 @@ export default {
               post_title: this.post_title,
               post_content: this.post_content,
               post_pw: this.post_pw,
-            }
+            },
         );
 
         if (response.status === 201) {

@@ -26,9 +26,9 @@ const routes = [
         props: true, // 라우트 매개변수를 컴포넌트의 props로 전달
     },
     {
-      path: '/join',
-      name: 'join',
-      component: JoinPage,
+        path: '/join',
+        name: 'join',
+        component: JoinPage,
     },
     {
         path: '/join/:user_id',
@@ -43,9 +43,9 @@ const routes = [
         props: true
     },
     {
-      path: '/edit',
-      name: 'boardEdit',
-      component: BoardEditPage
+        path: '/edit',
+        name: 'boardEdit',
+        component: BoardEditPage
     },
     {
         path: '/myPage',
