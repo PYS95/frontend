@@ -2,11 +2,15 @@
   <div>
     <h2>게시판 등록</h2>
     <form @submit.prevent="submitForm">
-      <input v-model="post_title" type="text" class="w3-input w3-border" placeholder="제목"/>
-      <input v-model="user_id" type="text" class="w3-input w3-border" :placeholder="user_id" readonly />
-      <textarea v-model="post_content" class="w3-input w3-border" placeholder="내용"></textarea>
-      <input v-model="post_pw" type="password" class="w3-input w3-border" placeholder="패스워드"/>
-      <br />
+      <input v-model="post_title" type="text" class="w3-input w3-border" placeholder="제목"
+             style="width:750px; height:50px; margin-left: auto; margin-right: auto"/>&nbsp;
+      <input v-model="user_id" type="text" class="w3-input w3-border" :placeholder="user_id"
+             style="width:750px; height:50px; margin-left: auto; margin-right: auto" readonly/>&nbsp;
+      <textarea v-model="post_content" class="w3-input w3-border" placeholder="내용"
+                style="width:750px; height:100px; margin-left: auto; margin-right: auto"/>&nbsp;
+      <input v-model="post_pw" type="password" class="w3-input w3-border" placeholder="패스워드"
+             style="width:750px; height:50px; margin-left: auto; margin-right: auto"/>
+      <br/>
       <button type="submit" class="w3-button w3-round w3-blue-gray">저장</button>&nbsp;
       <button type="button" class="w3-button w3-round w3-light-gray" @click="goBack">취소</button>&nbsp;
     </form>

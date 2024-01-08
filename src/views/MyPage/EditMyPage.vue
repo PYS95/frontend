@@ -1,12 +1,14 @@
 <template>
   <div>
     <h1>마이페이지 수정</h1>
-    <input v-model="user.user_id" type="text" class="w3-input w3-border" placeholder="작성자" :readonly="true"/>
-    <input v-model="new_user_pw" type="password" class="w3-input w3-border" placeholder="새로운 패스워드"/>
+    <input v-model="user.user_id" type="text" class="w3-input w3-border" placeholder="작성자"
+           style="width:750px; height:50px; margin-left: auto; margin-right: auto" :readonly="true"/>&nbsp;
+    <input v-model="new_user_pw" type="password" class="w3-input w3-border"
+           style="width: 750px; height:50px; margin-left: auto; margin-right: auto" placeholder="새로운 패스워드"/>
     <br>
     <button type="button" class="w3-button w3-round w3-blue-gray" @click="updatePassword">수정</button>&nbsp;
     <button type="button" class="w3-button w3-round w3-light-gray" @click="goBack">취소</button>&nbsp;
-    <button type="button" class="w3-button w3-round w3-dark-gray" @click="deleteUser">회원탈퇴</button>
+    <button type="button" class="w3-button w3-round w3-red" @click="deleteUser">회원탈퇴</button>
   </div>
 </template>
 
