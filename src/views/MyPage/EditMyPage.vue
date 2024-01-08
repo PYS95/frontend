@@ -26,22 +26,26 @@ export default {
   methods: {
     async updatePassword() {
       try {
+        if (!this.new_user_pw) {
+          alert("새로운 비밀번호를 입력해주세요.");
+          return;
+        }
+
         const response = await axios.put(
             `http://localhost:8080/api/user/${this.user.user_id}`,
             {
-              current_user_pw: this.user.user_pw,
+              current_user_pw: this.current_user_pw,
               new_user_pw: this.new_user_pw,
             }
         );
         alert(response.data);
-
         this.$router.push(`/join/${this.user.user_id}`)
-
       } catch (error) {
         console.error("비밀번호 변경 에러:", error.response.data);
         alert("비밀번호 변경에 실패했습니다.");
       }
     },
+
     async deleteUser() {
       try {
         const response = await axios.delete(`http://localhost:8080/api/user/${this.user.user_id}`);

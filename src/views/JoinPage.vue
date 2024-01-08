@@ -54,7 +54,7 @@ export default {
             params: { user_id: this.user_id },
           });
         } else {
-          console.log("회원가입 실패: ", response.data);
+          console.log("이미 존재하는 아이디입니다. : ", response.data);
           alert(response.data);
         }
       } catch (error) {
