@@ -75,24 +75,36 @@ export default {
     },
 
     fetchData() {
-      // 데이터 로드
+      // 게시물 및 댓글 데이터 로드
       const listId = this.$route.params.post_no;
       axios.get(`/api/post/${listId}`)
           .then(response => {
             this.currentGridData = response.data;
           })
           .catch(error => {
-            console.error('데이터 가져오기 오류:', error);
+            console.error('게시물 데이터 가져오기 오류:', error);
+          });
+
+      axios.get(`/api/comment/list/${listId}`)
+          .then(response => {
+            // 댓글 데이터를 현재 데이터에 설정
+            this.$set(this.currentGridData, 'comment', response.data);
+          })
+          .catch(error => {
+            console.error('댓글 데이터 가져오기 오류:', error);
           });
     },
+
     refreshData() {
       // 데이터 새로고침
       this.fetchData();
     },
+
     goBack() {
       // 뒤로 가기
       this.$router.go(-1);
     },
+
     goToPostEditPage() {
       // 게시물 수정 페이지로 이동
       const isAuthor = this.currentGridData.user_id === localStorage.getItem('userId');
@@ -102,6 +114,7 @@ export default {
         alert('게시글 작성자만 수정할 수 있습니다.');
       }
     },
+
     handleDeletePost() {
       const confirmation = confirm('정말로 이 게시물을 삭제하시겠습니까?');
       if (!confirmation) {
@@ -119,6 +132,7 @@ export default {
             alert('게시물 삭제에 실패했습니다.');
           });
     },
+
     handleDeleteComment(commentId, postId) {
       // 댓글 삭제 처리
       const isAuthor = commentId === localStorage.getItem('userId');
