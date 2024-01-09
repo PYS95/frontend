@@ -59,7 +59,6 @@ export default {
             useClient: true,
             perPage: 10,
           },
-          checkbox: true,
         },
       },
       gridData: [],
@@ -86,6 +85,44 @@ export default {
             console.log(res.status)
             console.log(res.data)
             this.gridData = res.data;
+
+            // 각 항목을 변환하기 위해 map을 사용
+            const updatedData = res.data.map((item) => {
+              return {
+                ...item,
+                post_comment_cnt: 0, // 댓글 수의 기본값을 0으로 설정
+              };
+            });
+
+            // 여러 비동기 요청을 처리하기 위해 Promise.all을 사용
+            const updateCommentCounts = updatedData.map((item) => {
+              return this.$axios
+                  .get(`/api/comment/count/${item.post_no}`)
+                  .then((commentRes) => {
+                    // 해당 항목의 댓글 수를 업데이트
+                    return {
+                      ...item,
+                      post_comment_cnt: commentRes.data,
+                    };
+                  })
+                  .catch((commentError) => {
+                    console.error("댓글 수 가져오기 오류:", commentError);
+                    return item; // 오류 발생 시 항목을 변경하지 않은 채로 반환
+                  });
+            });
+
+            // 모든 비동기 요청이 완료될 때까지 기다림
+            Promise.all(updateCommentCounts)
+                .then((updatedItems) => {
+                  // 댓글 수가 업데이트된 항목으로 gridData 배열을 업데이트
+                  this.gridData = updatedItems;
+                })
+                .catch((error) => {
+                  console.error("댓글 수 업데이트 오류:", error);
+                });
+          })
+          .catch((error) => {
+            console.error("게시물 리스트 가져오기 오류:", error);
           });
     },
 

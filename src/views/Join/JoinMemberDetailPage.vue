@@ -1,3 +1,4 @@
+<!-- JoinMemberDetailPage.vue -->
 <template>
   <div v-if="currentGridData" class="detail-page">
     <!-- 게시물 상세 페이지 헤더 -->
@@ -125,6 +126,14 @@ export default {
     },
 
     handleDeletePost() {
+      const userId = localStorage.getItem('userId');
+      const isAuthor = this.currentGridData.user_id === userId;
+
+      if (!isAuthor) {
+        alert('게시글 작성자만 삭제할 수 있습니다.');
+        return;
+      }
+
       const confirmation = confirm('정말로 이 게시물을 삭제하시겠습니까?');
       if (!confirmation) {
         return; // 사용자가 취소한 경우 삭제 처리 중단
@@ -133,8 +142,8 @@ export default {
       axios.delete(`/api/post/${this.currentGridData.post_no}`)
           .then(response => {
             alert(response.data);
-            // 게시물 삭제 후 목록 페이지로 이동 또는 다른 작업 수행
-            this.$router.push('/list'); // 예시로 목록 페이지로 이동하도록 설정
+            // 게시물 삭제 후 JoinMemberListPage.vue로 이동
+            this.$router.go(-1);
           })
           .catch(error => {
             console.error('게시물 삭제 오류:', error);

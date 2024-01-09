@@ -1,3 +1,4 @@
+<!-- DetailPage.vue -->
 <template>
   <div v-if="currentGridData" class="detail-page">
     <div class="common-buttons">
