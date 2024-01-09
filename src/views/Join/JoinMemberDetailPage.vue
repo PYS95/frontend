@@ -66,6 +66,9 @@ export default {
                 }
                 this.currentGridData.comment.push(response.data);
                 this.newComment = ''; // 입력 필드 초기화
+
+                // 댓글 추가 후에 댓글 목록을 다시 로드
+                this.fetchData();
               } else {
                 console.error('댓글 추가 오류: 댓글이 제대로 반환되지 않았습니다.');
               }
