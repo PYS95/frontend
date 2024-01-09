@@ -1,4 +1,4 @@
-<!--JoinMemberListPage.vue-->
+<!-- JoinMemberListPage.vue -->
 <template>
   <div class="container">
     <div class="common-buttons">
@@ -15,7 +15,6 @@
           class="custom-grid"
           @grid-instance="handleGridInstance"
       ></TuiGrid>
-      <button type="button" class="w3-button w3-round w3-red bottom-left" @click="deleteSelectedRows">삭제</button>
     </div>
   </div>
 </template>
@@ -61,39 +60,15 @@ export default {
           pageOptions: {
             perPage: 10,
           },
-          // checkbox: true,
         },
-        // rowHeaders: ['checkbox'],
       },
       gridData: [],
-      // checkedRows: [], // 체크된 행의 인덱스를 저장하는 배열
       gridInstance: null,
     };
   },
   methods: {
-    // 그리드 인스턴스가 생성될 때 호출되는 콜백 함수
     handleGridInstance(gridInstance) {
       this.gridInstance = gridInstance;
-
-      // // 체크박스 비활성화
-      // this.gridInstance.on('mousedown', (ev) => {
-      //   const target = ev.target;
-      //
-      //   if (target && target.classList) {
-      //     const checkboxClass = 'tui-grid-checkbox';
-      //
-      //     if (target.classList.contains(checkboxClass)) {
-      //       ev.preventDefault();
-      //     }
-      //   }
-      // });
-      //
-      // this.gridInstance.on('check', (ev) => {
-      //   console.log('check', ev);
-      // });
-      // this.gridInstance.on('uncheck', (ev) => {
-      //   console.log('check', ev);
-      // });
     },
 
     openDetailPage(rowData) {
@@ -101,22 +76,7 @@ export default {
         this.$router.push(`/join/${rowData.user_id}/${rowData.post_no}`);
       }
     },
-    // deleteSelectedRows() {
-    //   const selectedRows = this.gridInstance.getCheckedRows();
-    //
-    //   if (selectedRows.length === 0) {
-    //     alert('삭제할 게시글을 선택해주세요.');
-    //     return;
-    //   }
-    //
-    //   const confirmDelete = window.confirm('선택한 항목을 삭제하시겠습니까?');
-    //   if (confirmDelete) {
-    //     // Remove selected rows from gridData
-    //     this.gridData = this.gridData.filter(row => !selectedRows.includes(row));
-    //
-    //     console.log('삭제된 행의 rowKey: ', selectedRows);
-    //   }
-    // },
+
     getPostList() {
       this.$axios
           .get("http://localhost:8080/api/post/list")
@@ -139,7 +99,7 @@ export default {
           user_pw: '',
         },
       });
-    }
+    },
   },
   mounted() {
     this.gridInstance.on('click', (ev) => {
@@ -155,9 +115,4 @@ export default {
 </script>
 
 <style>
-.bottom-left {
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-}
 </style>

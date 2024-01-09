@@ -9,7 +9,7 @@
       <textarea v-model="post_content" class="w3-input w3-border" placeholder="내용"
                 style="width:750px; height:100px; margin-left: auto; margin-right: auto"/>&nbsp;
       <input v-model="post_pw" type="password" class="w3-input w3-border" placeholder="패스워드"
-             style="width:750px; height:50px; margin-left: auto; margin-right: auto"/>
+             style="width:750px; height:50px; margin-left: auto; margin-right: auto" readonly/>
       <br/>
       <button type="submit" class="w3-button w3-round w3-blue-gray">수정</button>&nbsp;
       <button type="button" class="w3-button w3-round w3-light-gray" @click="goBack">취소</button>&nbsp;
