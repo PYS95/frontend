@@ -100,6 +100,61 @@ export default {
         },
       });
     },
+    registerComment(commentDto) {
+      this.$axios
+          .post("http://localhost:8080/api/comment/add", commentDto)
+          .then((res) => {
+            // 업데이트된 댓글 수로 gridData 업데이트
+            const postId = commentDto.post_no;
+            const updatedGridData = this.gridData.map((item) => {
+              if (item.post_no === postId) {
+                item.post_comment_cnt = res.data.comment_content;
+              }
+              return item;
+            });
+
+            // gridData 업데이트하여 반응성 활성화
+            this.gridData = [...updatedGridData];
+          })
+          .catch((error) => {
+            console.error("댓글 등록 오류:", error);
+          });
+    },
+    // 댓글 등록 후 댓글 수를 업데이트하는 메서드
+    updateCommentCount(postId) {
+      const updatedGridData = this.gridData.map((item) => {
+        if (item.post_no === postId) {
+          item.post_comment_cnt += 1;
+        }
+        return item;
+      });
+
+      // 업데이트된 gridData로 갱신
+      this.gridData = [...updatedGridData];
+    },
+    // 회원가입 후 댓글 수 갱신
+    updateCommentCountAfterJoin() {
+      const updateCommentCounts = this.gridData.map(async (item) => {
+        try {
+          const commentCount = await this.getCommentCount(item.post_no);
+          return {
+            ...item,
+            post_comment_cnt: commentCount,
+          };
+        } catch (error) {
+          console.error("댓글 수 가져오기 오류:", error);
+          return item;
+        }
+      });
+
+      Promise.all(updateCommentCounts)
+          .then((updatedItems) => {
+            this.gridData = updatedItems;
+          })
+          .catch((error) => {
+            console.error("댓글 수 업데이트 오류:", error);
+          });
+    },
   },
   mounted() {
     this.gridInstance.on('click', (ev) => {
