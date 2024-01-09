@@ -16,16 +16,18 @@
       <!-- 게시물 내용 -->
       <div class="content" v-html="currentGridData.post_content"></div>
     </div>
+    <!-- 이전 코드에서 수정된 부분 -->
     <h2>댓글</h2>
-    <div v-if="currentGridData.comment" class="comment">
-      <div v-for="comment in currentGridData.comment" :key="comment.comment_no" class="comment">
-        <div class="comment-content">
-          <!-- 댓글 내용과 작성자 아이디 출력 -->
-          <p>{{ comment.comment_content }} (작성자: {{ comment.user_id }})</p>
+    <template v-if="currentGridData.comment && currentGridData.comment.length > 0">
+      <div v-for="comment in currentGridData.comment.slice().reverse()" :key="comment.comment_no">
+        <div class="comment">
+          <div class="comment-content">
+            <p>{{ comment.comment_content }} | {{ comment.user_id }}</p>
+          </div>
+          <button @click="handleDeleteComment(comment.comment_no)">삭제</button>
         </div>
-        <button @click="handleDeleteComment(comment.comment_no, currentGridData.post_no)">삭제</button>
       </div>
-    </div>
+    </template>
     <div class="comment-input">
       <!-- 댓글 추가 입력 폼 -->
       <textarea v-model="newComment" placeholder="댓글을 입력하세요."></textarea>
@@ -77,6 +79,7 @@ export default {
     fetchData() {
       // 게시물 및 댓글 데이터 로드
       const listId = this.$route.params.post_no;
+
       axios.get(`/api/post/${listId}`)
           .then(response => {
             this.currentGridData = response.data;
@@ -87,17 +90,20 @@ export default {
 
       axios.get(`/api/comment/list/${listId}`)
           .then(response => {
-            // 댓글 데이터를 현재 데이터에 설정
-            this.$set(this.currentGridData, 'comment', response.data);
+            // 응답이 유효하고 댓글 데이터를 포함하는지 확인
+            if (response.data && response.data.length > 0) {
+              // 댓글 데이터를 현재 데이터에 설정
+              this.$set(this.currentGridData, 'comment', response.data);
+            } else {
+              // 댓글 데이터가 없을 때는 빈 배열로 설정
+              this.$set(this.currentGridData, 'comment', []);
+            }
           })
           .catch(error => {
+            // 댓글 데이터를 가져오는 동안 오류가 발생하면 빈 배열로 설정
             console.error('댓글 데이터 가져오기 오류:', error);
+            this.$set(this.currentGridData, 'comment', []);
           });
-    },
-
-    refreshData() {
-      // 데이터 새로고침
-      this.fetchData();
     },
 
     goBack() {
@@ -133,9 +139,13 @@ export default {
           });
     },
 
-    handleDeleteComment(commentId, postId) {
+    handleDeleteComment(commentId) {
       // 댓글 삭제 처리
-      const isAuthor = commentId === localStorage.getItem('userId');
+      const userId = localStorage.getItem('userId');
+
+      // 댓글 작성자 여부 확인
+      const isAuthor = this.currentGridData.comment.find(comment => comment.comment_no === commentId && comment.user_id === userId);
+
       if (!isAuthor) {
         alert('댓글 작성자만 삭제할 수 있습니다.');
         return;
@@ -150,7 +160,7 @@ export default {
           .then(response => {
             alert(response.data);
             // 댓글 삭제 후 해당 게시물의 데이터만 다시 로드
-            this.$root.$emit('refreshData', postId);
+            this.fetchData();
           })
           .catch(error => {
             console.error('댓글 삭제 오류:', error);
@@ -159,9 +169,8 @@ export default {
     },
   },
   mounted() {
-    // 컴포넌트 마운트 시 데이터 로드 및 이벤트 리스너 등록
+    // 컴포넌트 마운트 시 데이터 로드
     this.fetchData();
-    this.$root.$on('refreshData', this.refreshData);
   },
 };
 </script>

@@ -8,7 +8,7 @@
     <br>
     <button type="button" class="w3-button w3-round w3-blue-gray" @click="updatePassword">수정</button>&nbsp;
     <button type="button" class="w3-button w3-round w3-light-gray" @click="goBack">취소</button>&nbsp;
-    <button type="button" class="w3-button w3-round w3-red" @click="deleteUser">회원탈퇴</button>
+    <button type="button" class="w3-button w3-round w3-red" @click="confirmDeleteUser">회원탈퇴</button>
   </div>
 </template>
 
@@ -41,7 +41,7 @@ export default {
             }
         );
         alert(response.data);
-        this.$router.push(`/join/${this.user.user_id}`)
+        this.$router.push(`/join/${this.user.user_id}`);
       } catch (error) {
         console.error("비밀번호 변경 에러:", error.response.data);
         alert("비밀번호 변경에 실패했습니다.");
@@ -58,6 +58,14 @@ export default {
         alert("회원탈퇴에 실패했습니다.");
       }
     },
+
+    confirmDeleteUser() {
+      const confirmation = confirm('정말로 회원을 탈퇴하시겠습니까?');
+      if (confirmation) {
+        this.deleteUser();
+      }
+    },
+
     goBack() {
       this.$router.go(-1);
     },
