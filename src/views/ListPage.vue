@@ -51,7 +51,6 @@ export default {
         ],
         //그리드의 기타 옵션 설정
         options: {
-
           headerHeight: 40,
           rowHeight: 40,
           showDummyRows: true,
@@ -60,6 +59,7 @@ export default {
             useClient: true,
             perPage: 10,
           },
+          checkbox: true,
         },
       },
       gridData: [],

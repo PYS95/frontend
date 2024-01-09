@@ -24,7 +24,6 @@ export default {
       },
     },
   },
-
   mounted() {
     try {
       const option = Object.assign(this.options || {}, {
@@ -35,6 +34,9 @@ export default {
         pageOptions: {
           useClient: true,
           perPage: 10,
+        },
+        checkbox: {
+          useRowKey: true,
         },
       });
       this.gridInstance = new Grid(option);
