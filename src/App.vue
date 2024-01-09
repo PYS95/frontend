@@ -1,3 +1,4 @@
+<!--App.vue-->
 <template>
   <!-- 애플리케이션의 루트 엘리먼트, 여기서는 div#app -->
   <div id="app">

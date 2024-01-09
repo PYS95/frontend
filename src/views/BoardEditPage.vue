@@ -1,35 +1,83 @@
 <template>
-  <div class="edit">
-    <div class="board-contents">
-      <input type="text" v-model="post_title" class="w3-input w3-border" placeholder="제목을 입력해주세요.">
-      <input type="text" v-model="user_id" class="w3-input w3-border" placeholder="작성자를 입력해주세요."
-             v-if="user_id === undefined">
-      <input type="text" v-model="post_content" class="w3-input w3-border" placeholder="내용을 입력해주세요.">
-      <input type="text" v-model="post_pw" class="w3-input w3-border" placeholder="패스워드를 입력해주세요.">
-    </div>
-
-
-    <!--    <input v-model="post_title" placeholder="제목을 입력하세요"/>-->
-    <!--    <br>-->
-    <!--    <input v-model="user_id" placeholder="아이디를 입력하세요"/>-->
-    <!--    <br>-->
-    <!--    <input v-model="post_content" placeholder="내용을 입력하세요"/>-->
-    <!--    <br>-->
-    <!--    <input v-model="post_pw" placeholder="패스워드를 입력하세요"/>-->
-    <br>
-
-
-    <div class="common-buttons">
-      <button type="button" class="w3-button w3-round w3-blue-gray" v-on:click="fnSave">저장</button>&nbsp;
-      <router-link to="/">취소</router-link>
-    </div>
-    <!--    <button type="submit">등록</button>-->
-    <!--    <router-link to="/">취소</router-link>-->
+  <div>
+    <h2>게시판 등록</h2>
+    <form @submit.prevent="submitForm">
+      <input v-model="post_title" type="text" class="w3-input w3-border" placeholder="제목"
+             style="width:750px; height:50px; margin-left: auto; margin-right: auto"/>&nbsp;
+      <input v-model="user_id" type="text" class="w3-input w3-border" :placeholder="user_id"
+             style="width:750px; height:50px; margin-left: auto; margin-right: auto" readonly/>&nbsp;
+      <textarea v-model="post_content" class="w3-input w3-border" placeholder="내용"
+                style="width:750px; height:100px; margin-left: auto; margin-right: auto"/>&nbsp;
+      <input v-model="post_pw" type="password" class="w3-input w3-border" placeholder="패스워드"
+             style="width:750px; height:50px; margin-left: auto; margin-right: auto"/>
+      <br/>
+      <button type="submit" class="w3-button w3-round w3-blue-gray">저장</button>&nbsp;
+      <button type="button" class="w3-button w3-round w3-light-gray" @click="goBack">취소</button>&nbsp;
+    </form>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 
+export default {
+  data() {
+    return {
+      post_title: "",
+      user_id: "",
+      post_content: "",
+      post_pw: "",
+    };
+  },
+  mounted() {
+    this.fetchUserId();
+  },
+  methods: {
+    fetchUserId() {
+      try {
+        const storedUserId = localStorage.getItem('userId');
+        if (storedUserId) {
+          this.user_id = storedUserId;
+        } else {
+          console.error("로컬 스토리지에서 사용자 ID를 찾을 수 없습니다.");
+        }
+      } catch (error) {
+        console.error("로컬 스토리지에서 사용자 ID를 가져오는 중 오류 발생:", error);
+      }
+    },
+    async submitForm() {
+      if (!this.post_title || !this.post_content || !this.post_pw) {
+        alert("모든 항목을 입력해주세요.");
+        return;
+      }
+
+      try {
+        const response = await axios.post(
+            `http://localhost:8080/api/post`,
+            {
+              user_id: this.user_id,
+              post_title: this.post_title,
+              post_content: this.post_content,
+              post_pw: this.post_pw,
+            },
+        );
+
+        if (response.status === 201) {
+          alert("게시글이 성공적으로 등록되었습니다.");
+          await this.$router.go(-1);
+        } else {
+          alert("게시글 등록에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("게시판 생성 에러:", error);
+        alert("게시글 등록에 실패했습니다.");
+      }
+    },
+    goBack() {
+      this.$router.go(-1);
+    },
+  },
+};
 </script>
 
 <style>

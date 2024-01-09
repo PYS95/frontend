@@ -35,26 +35,31 @@ export default {
         columns: [
           {
             header: '제목',
-            name: 'title',
-            sortingType: 'desc',
-            sortable: true,
+            name: 'post_title',
+            align: 'center',
           },
           {
             header: '작성자',
-            name: 'name',
-            sortingType: 'desc',
-            sortable: true,
+            name: 'user_id',
+            align: 'center',
           },
           {
             header: '댓글 수',
-            name: 'commentCount',
-            sortingType: 'desc',
-            sortable: true,
+            name: 'post_comment_cnt',
+            align: 'center',
           },
         ],
         //그리드의 기타 옵션 설정
         options: {
-          rowHeaders: ['rowNum'],
+          headerHeight: 40,
+          rowHeight: 40,
+          showDummyRows: true,
+          bodyHeight: 400,
+          pageOptions: {
+            useClient: true,
+            perPage: 10,
+          },
+          checkbox: true,
         },
       },
       gridData: [],
@@ -70,14 +75,13 @@ export default {
     // 상세 페이지로 이동하는 메소드
     openDetailPage(rowData) {
       if (rowData) {
-        // this.setCurrentGridData(rowData.id);
         // Vue Router를 사용하여 상세 페이지로 이동
-        this.$router.push(`/detail/${rowData.id}`);
+        this.$router.push(`/detail/${rowData.post_no}`);
       }
     },
-    getBoardList() {
+    getPostList() {
       this.$axios
-          .get("/api/boardList")
+          .get("/api/post/list")
           .then((res) => {
             console.log(res.status)
             console.log(res.data)
@@ -95,14 +99,15 @@ export default {
       const rowData = this.gridInstance.getRow(ev.rowKey);
 
       // '제목' 열을 클릭하면 상세 페이지로 이동하는 메소드 호출
-      if (ev.columnName === 'title' && rowData) {
+      if (ev.columnName === 'post_title' && rowData) {
         this.openDetailPage(rowData);
       }
     });
-    this.getBoardList();
+    this.getPostList();
   },
 };
 </script>
 
 <style>
+
 </style>
