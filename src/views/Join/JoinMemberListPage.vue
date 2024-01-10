@@ -1,16 +1,21 @@
-<!-- ListPage.vue -->
+<!-- JoinMemberListPage.vue -->
 <template>
   <div class="container">
     <div class="common-buttons">
-      <button type="button" class="w3-button w3-round w3-dark-gray" @click="goToJoinPage">회원가입</button>
+      <h5>{{ user_id }}님 환영합니다</h5>
+      <button type="button" class="w3-button w3-round w3-blue-gray" @click="goToBoardEditPage">게시글 남기기</button>&nbsp;
+      <button type="button" class="w3-button w3-round w3-light-gray" @click="goToEditMyPage">마이페이지</button>
     </div>
-    <TuiGrid
-        :data="gridData"
-        :columns="gridProps.columns"
-        :options="gridProps.options"
-        class="custom-grid"
-        @grid-instance="handleGridInstance"
-    ></TuiGrid>
+    <div class="CheckboxRender">
+      <TuiGrid
+          :data="gridData"
+          :columns="gridProps.columns"
+          :options="gridProps.options"
+          :rowHeaders="gridProps.rowHeaders"
+          class="custom-grid"
+          @grid-instance="handleGridInstance"
+      ></TuiGrid>
+    </div>
   </div>
 </template>
 
@@ -20,12 +25,13 @@ import 'tui-pagination/dist/tui-pagination.css';
 import TuiGrid from "@/components/TuiGrid.vue";
 
 export default {
-  name: "ListPage",
+  name: "JoinMemberListPage",
   components: {
     TuiGrid,
   },
   data() {
     return {
+      user_id: '',
       gridProps: {
         columns: [
           {
@@ -45,12 +51,13 @@ export default {
           },
         ],
         options: {
+          scrollX: false,
+          scrollY: false,
           headerHeight: 40,
           rowHeight: 40,
           showDummyRows: true,
           bodyHeight: 400,
           pageOptions: {
-            useClient: true,
             perPage: 10,
           },
         },
@@ -60,6 +67,16 @@ export default {
     };
   },
   methods: {
+    handleGridInstance(gridInstance) {
+      this.gridInstance = gridInstance;
+    },
+
+    openDetailPage(rowData) {
+      if (rowData) {
+        this.$router.push(`/join/${rowData.user_id}/${rowData.post_no}`);
+      }
+    },
+
     getCommentCount(postId) {
       return this.$axios.get(`/api/comment/list/${postId}`)
           .then((response) => response.data.length)
@@ -71,10 +88,10 @@ export default {
 
     getPostList() {
       this.$axios
-          .get("/api/post/list")
+          .get("http://localhost:8080/api/post/list")
           .then((res) => {
-            console.log(res.status)
-            console.log(res.data)
+            console.log(res.status);
+            console.log(res.data);
             this.gridData = res.data;
 
             const updateCommentCounts = this.gridData.map(async (item) => {
@@ -103,18 +120,18 @@ export default {
           });
     },
 
-    goToJoinPage() {
-      this.$router.push('/join');
+    goToBoardEditPage() {
+      this.$router.push('/edit');
     },
 
-    handleGridInstance(gridInstance) {
-      this.gridInstance = gridInstance;
-    },
-
-    openDetailPage(rowData) {
-      if (rowData) {
-        this.$router.push(`/detail/${rowData.post_no}`);
-      }
+    goToEditMyPage() {
+      this.$router.push({
+        path: '/mypage',
+        query: {
+          user_id: this.user_id,
+          user_pw: '',
+        },
+      });
     },
 
     registerComment(commentDto) {
@@ -143,17 +160,17 @@ export default {
           .catch((error) => {
             console.error("댓글 등록 오류:", error);
           });
-    }
-
+    },
   },
+
   mounted() {
     this.gridInstance.on('click', (ev) => {
       const rowData = this.gridInstance.getRow(ev.rowKey);
-
       if (ev.columnName === 'post_title' && rowData) {
         this.openDetailPage(rowData);
       }
     });
+    this.user_id = this.$route.params.user_id;
     this.getPostList();
   },
 };
