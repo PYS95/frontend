@@ -12,8 +12,8 @@
     <div class="content-section">
       <h2>내용</h2>
       <div class="content" v-html="currentGridData.post_content"></div>
+      <h2>댓글</h2>
     </div>
-    <h2>댓글</h2>
     <template v-if="hasComments">
       <div v-for="comment in reversedComments" :key="comment.comment_no">
         <div class="comment">
@@ -65,10 +65,8 @@ export default {
                 if (!this.currentGridData.comment) {
                   this.$set(this.currentGridData, 'comment', []);
                 }
-                this.currentGridData.comment.push(response.data);
+                this.$set(this.currentGridData.comment, this.currentGridData.comment.length, response.data);
                 this.newComment = '';
-
-                // Reload comments after adding a new comment
                 this.fetchData();
               } else {
                 console.error('댓글 추가 오류: 댓글이 제대로 반환되지 않았습니다.');
@@ -85,23 +83,27 @@ export default {
 
       axios.get(`/api/post/${listId}`)
           .then(response => {
-            this.currentGridData = response.data;
-          })
-          .catch(error => {
-            console.error('게시물 데이터 가져오기 오류:', error);
-          });
+            if (response.data) {
+              this.currentGridData = response.data;
 
-      axios.get(`/api/comment/list/${listId}`)
-          .then(response => {
-            if (response.data && response.data.length > 0) {
-              this.$set(this.currentGridData, 'comment', response.data);
+              axios.get(`/api/comment/list/${listId}`)
+                  .then(response => {
+                    if (response.data && response.data.length > 0) {
+                      this.$set(this.currentGridData, 'comment', response.data);
+                    } else {
+                      this.$set(this.currentGridData, 'comment', []);
+                    }
+                  })
+                  .catch(error => {
+                    console.error('댓글 데이터 가져오기 오류:', error);
+                    this.$set(this.currentGridData, 'comment', []);
+                  });
             } else {
-              this.$set(this.currentGridData, 'comment', []);
+              console.error('게시물 데이터 가져오기 오류: 게시물이 제대로 반환되지 않았습니다.');
             }
           })
           .catch(error => {
-            console.error('댓글 데이터 가져오기 오류:', error);
-            this.$set(this.currentGridData, 'comment', []);
+            console.error('게시물 데이터 가져오기 오류:', error);
           });
     },
 
@@ -160,13 +162,17 @@ export default {
       axios.delete(`/api/comment/${commentId}`)
           .then(response => {
             alert(response.data);
-            this.fetchData();
+            // 댓글 삭제 후 현재 댓글 카운트를 1 감소시킴
+            this.currentGridData.post_comment_cnt -= 1;
+            // 현재 페이지 데이터 갱신
+            this.currentGridData.comment = this.currentGridData.comment.filter(comment => comment.comment_no !== commentId);
           })
           .catch(error => {
             console.error('댓글 삭제 오류:', error);
             alert('댓글 삭제에 실패했습니다.');
           });
-    },
+    }
+
   },
   mounted() {
     this.fetchData();

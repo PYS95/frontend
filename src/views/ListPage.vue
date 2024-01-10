@@ -121,22 +121,29 @@ export default {
       this.$axios
           .post("http://localhost:8080/api/comment/add", commentDto)
           .then((res) => {
+            // 댓글이 삭제된 경우 서버 응답에서 댓글 카운트가 반환되지 않을 수 있음
+            const commentCount = res.data.commentCount || 0;
+
             // 업데이트된 댓글 수로 gridData 업데이트
             const postId = commentDto.post_no;
             const updatedGridData = this.gridData.map((item) => {
               if (item.post_no === postId) {
-                item.post_comment_cnt = res.data.commentCount;
+                item.post_comment_cnt = commentCount;
               }
               return item;
             });
 
             // gridData 업데이트하여 반응성 활성화
             this.gridData = [...updatedGridData];
+
+            // 댓글 등록 후 업데이트가 완료되면 그때 화면 갱신
+            this.$nextTick(() => {
+            });
           })
           .catch((error) => {
             console.error("댓글 등록 오류:", error);
           });
-    },
+    }
 
   },
   mounted() {

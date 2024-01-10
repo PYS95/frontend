@@ -10,8 +10,8 @@
     <div class="content-section">
       <h2>내용</h2>
       <div class="content" v-html="currentGridData.post_content"></div>
+      <h2>댓글</h2>
     </div>
-    <h2>댓글</h2>
     <template v-if="hasComments">
       <div v-for="comment in reversedComments" :key="comment.comment_no">
         <div class="comment">
