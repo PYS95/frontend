@@ -132,29 +132,6 @@ export default {
       // 업데이트된 gridData로 갱신
       this.gridData = [...updatedGridData];
     },
-    // 회원가입 후 댓글 수 갱신
-    updateCommentCountAfterJoin() {
-      const updateCommentCounts = this.gridData.map(async (item) => {
-        try {
-          const commentCount = await this.getCommentCount(item.post_no);
-          return {
-            ...item,
-            post_comment_cnt: commentCount,
-          };
-        } catch (error) {
-          console.error("댓글 수 가져오기 오류:", error);
-          return item;
-        }
-      });
-
-      Promise.all(updateCommentCounts)
-          .then((updatedItems) => {
-            this.gridData = updatedItems;
-          })
-          .catch((error) => {
-            console.error("댓글 수 업데이트 오류:", error);
-          });
-    },
   },
   mounted() {
     this.gridInstance.on('click', (ev) => {

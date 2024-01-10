@@ -1,4 +1,3 @@
-<!-- DetailPage.vue -->
 <template>
   <div v-if="currentGridData" class="detail-page">
     <div class="common-buttons">
@@ -13,8 +12,8 @@
       <div class="content" v-html="currentGridData.post_content"></div>
     </div>
     <h2>댓글</h2>
-    <template v-if="currentGridData.comment && currentGridData.comment.length > 0">
-      <div v-for="comment in currentGridData.comment.slice().reverse()" :key="comment.comment_no">
+    <template v-if="hasComments">
+      <div v-for="comment in reversedComments" :key="comment.comment_no">
         <div class="comment">
           <div class="comment-content">
             <p>{{ comment.comment_content }} | {{ comment.user_id }}</p>
@@ -43,6 +42,9 @@ export default {
     hasComments() {
       return this.currentGridData.comment && this.currentGridData.comment.length > 0;
     },
+    reversedComments() {
+      return this.currentGridData.comment.slice().reverse();
+    },
   },
   methods: {
     fetchData() {
@@ -52,26 +54,16 @@ export default {
       axios.get(`/api/post/${listId}`)
           .then(response => {
             this.currentGridData = response.data || {};
+            return axios.get(`/api/comment/list/${listId}`);
+          })
+          .then(response => {
+            // 기존에 존재하는 comment 속성에 데이터를 할당
+            this.$set(this.currentGridData, 'comment', response.data || []);
           })
           .catch(error => {
             console.error('데이터 가져오기 오류:', error);
-          });
-
-      axios.get(`/api/comment/list/${listId}`)
-          .then(response => {
-            if (!this.currentGridData.comment) {
-              this.$set(this.currentGridData, 'comment', []);
-            }
-
-            if (response.data && response.data.length > 0) {
-              this.currentGridData.comment = response.data;
-            } else {
-              this.currentGridData.comment = [];
-            }
-          })
-          .catch(error => {
-            console.error('댓글 데이터 가져오기 오류:', error);
-            this.currentGridData.comment = [];
+            // 오류 시 빈 배열로 설정
+            this.$set(this.currentGridData, 'comment', []);
           });
     },
 
@@ -86,7 +78,4 @@ export default {
 </script>
 
 <style>
-.comment-content {
-  margin-bottom: 10px;
-}
 </style>

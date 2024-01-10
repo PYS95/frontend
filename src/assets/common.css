@@ -112,3 +112,7 @@
     border: none;
     cursor: pointer;
 }
+
+.comment-content {
+    margin-bottom: 10px;
+}
