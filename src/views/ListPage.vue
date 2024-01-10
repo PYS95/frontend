@@ -1,11 +1,9 @@
 <!-- ListPage.vue -->
 <template>
-  <!-- 페이지 목록 컴포넌트의 루트 엘리먼트 -->
   <div class="container">
     <div class="common-buttons">
       <button type="button" class="w3-button w3-round w3-dark-gray" @click="goToJoinPage">회원가입</button>
     </div>
-    <!-- TuiGrid 컴포넌트: 그리드 데이터를 표시하고 인터랙션을 제공-->
     <TuiGrid
         :data="gridData"
         :columns="gridProps.columns"
@@ -17,7 +15,6 @@
 </template>
 
 <script>
-// 필요한 라이브러리 및 컴포넌트를 가져옴
 import 'tui-grid/dist/tui-grid.css';
 import 'tui-pagination/dist/tui-pagination.css';
 import TuiGrid from "@/components/TuiGrid.vue";
@@ -25,13 +22,11 @@ import TuiGrid from "@/components/TuiGrid.vue";
 export default {
   name: "ListPage",
   components: {
-    TuiGrid, // TuiGrid 컴포넌트를 현재 컴포넌트에 등록
+    TuiGrid,
   },
   data() {
-    // 컴포넌트의 데이터 영역: 그리드와 관련된 속성 및 상태
     return {
       gridProps: {
-        // 그리드의 컬럼 설정
         columns: [
           {
             header: '제목',
@@ -49,7 +44,6 @@ export default {
             align: 'center',
           },
         ],
-        //그리드의 기타 옵션 설정
         options: {
           headerHeight: 40,
           rowHeight: 40,
@@ -59,26 +53,22 @@ export default {
             useClient: true,
             perPage: 10,
           },
-          checkbox: true,
         },
       },
       gridData: [],
-      gridInstance: null, // TuiGrid 인스턴스를 저장하는 변수
+      gridInstance: null,
     };
   },
   methods: {
-    // 그리드 인스턴스가 생성될 때 호출되는 콜백 함수
-    handleGridInstance(gridInstance) {
-      this.gridInstance = gridInstance;
+    getCommentCount(postId) {
+      return this.$axios.get(`/api/comment/list/${postId}`)
+          .then((response) => response.data.length)
+          .catch(() => {
+            console.error("댓글 수 가져오기 오류");
+            return 0; // 에러 시 댓글 수를 0으로 반환
+          });
     },
 
-    // 상세 페이지로 이동하는 메소드
-    openDetailPage(rowData) {
-      if (rowData) {
-        // Vue Router를 사용하여 상세 페이지로 이동
-        this.$router.push(`/detail/${rowData.post_no}`);
-      }
-    },
     getPostList() {
       this.$axios
           .get("/api/post/list")
@@ -86,19 +76,80 @@ export default {
             console.log(res.status)
             console.log(res.data)
             this.gridData = res.data;
+
+            const updateCommentCounts = this.gridData.map(async (item) => {
+              try {
+                const commentCount = await this.getCommentCount(item.post_no);
+                return {
+                  ...item,
+                  post_comment_cnt: commentCount,
+                };
+              } catch (error) {
+                console.error("댓글 수 가져오기 오류:", error);
+                return item;
+              }
+            });
+
+            Promise.all(updateCommentCounts)
+                .then((updatedItems) => {
+                  this.gridData = updatedItems;
+                })
+                .catch((error) => {
+                  console.error("댓글 수 업데이트 오류:", error);
+                });
+          })
+          .catch((error) => {
+            console.error("게시물 리스트 가져오기 오류:", error);
           });
     },
 
     goToJoinPage() {
-      this.$router.push('/join')
+      this.$router.push('/join');
     },
+
+    handleGridInstance(gridInstance) {
+      this.gridInstance = gridInstance;
+    },
+
+    openDetailPage(rowData) {
+      if (rowData) {
+        this.$router.push(`/detail/${rowData.post_no}`);
+      }
+    },
+
+    registerComment(commentDto) {
+      this.$axios
+          .post("http://localhost:8080/api/comment/add", commentDto)
+          .then((res) => {
+            // 댓글이 삭제된 경우 서버 응답에서 댓글 카운트가 반환되지 않을 수 있음
+            const commentCount = res.data.commentCount || 0;
+
+            // 업데이트된 댓글 수로 gridData 업데이트
+            const postId = commentDto.post_no;
+            const updatedGridData = this.gridData.map((item) => {
+              if (item.post_no === postId) {
+                item.post_comment_cnt = commentCount;
+              }
+              return item;
+            });
+
+            // gridData 업데이트하여 반응성 활성화
+            this.gridData = [...updatedGridData];
+
+            // 댓글 등록 후 업데이트가 완료되면 그때 화면 갱신
+            this.$nextTick(() => {
+            });
+          })
+          .catch((error) => {
+            console.error("댓글 등록 오류:", error);
+          });
+    }
+
   },
   mounted() {
-    // 그리드 행을 클릭할 때 발생하는 이벤트 처리
     this.gridInstance.on('click', (ev) => {
       const rowData = this.gridInstance.getRow(ev.rowKey);
 
-      // '제목' 열을 클릭하면 상세 페이지로 이동하는 메소드 호출
       if (ev.columnName === 'post_title' && rowData) {
         this.openDetailPage(rowData);
       }
@@ -109,5 +160,4 @@ export default {
 </script>
 
 <style>
-
 </style>

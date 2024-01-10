@@ -1,4 +1,4 @@
-<!--JoinMemberListPage.vue-->
+<!-- JoinMemberListPage.vue -->
 <template>
   <div class="container">
     <div class="common-buttons">
@@ -15,7 +15,6 @@
           class="custom-grid"
           @grid-instance="handleGridInstance"
       ></TuiGrid>
-      <button type="button" class="w3-button w3-round w3-red bottom-left" @click="deleteSelectedRows">삭제</button>
     </div>
   </div>
 </template>
@@ -61,39 +60,15 @@ export default {
           pageOptions: {
             perPage: 10,
           },
-          // checkbox: true,
         },
-        // rowHeaders: ['checkbox'],
       },
       gridData: [],
-      // checkedRows: [], // 체크된 행의 인덱스를 저장하는 배열
       gridInstance: null,
     };
   },
   methods: {
-    // 그리드 인스턴스가 생성될 때 호출되는 콜백 함수
     handleGridInstance(gridInstance) {
       this.gridInstance = gridInstance;
-
-      // // 체크박스 비활성화
-      // this.gridInstance.on('mousedown', (ev) => {
-      //   const target = ev.target;
-      //
-      //   if (target && target.classList) {
-      //     const checkboxClass = 'tui-grid-checkbox';
-      //
-      //     if (target.classList.contains(checkboxClass)) {
-      //       ev.preventDefault();
-      //     }
-      //   }
-      // });
-      //
-      // this.gridInstance.on('check', (ev) => {
-      //   console.log('check', ev);
-      // });
-      // this.gridInstance.on('uncheck', (ev) => {
-      //   console.log('check', ev);
-      // });
     },
 
     openDetailPage(rowData) {
@@ -101,34 +76,52 @@ export default {
         this.$router.push(`/join/${rowData.user_id}/${rowData.post_no}`);
       }
     },
-    // deleteSelectedRows() {
-    //   const selectedRows = this.gridInstance.getCheckedRows();
-    //
-    //   if (selectedRows.length === 0) {
-    //     alert('삭제할 게시글을 선택해주세요.');
-    //     return;
-    //   }
-    //
-    //   const confirmDelete = window.confirm('선택한 항목을 삭제하시겠습니까?');
-    //   if (confirmDelete) {
-    //     // Remove selected rows from gridData
-    //     this.gridData = this.gridData.filter(row => !selectedRows.includes(row));
-    //
-    //     console.log('삭제된 행의 rowKey: ', selectedRows);
-    //   }
-    // },
+
+    getCommentCount(postId) {
+      return this.$axios.get(`/api/comment/list/${postId}`)
+          .then((response) => response.data.length)
+          .catch(() => {
+            console.error("댓글 수 가져오기 오류");
+            return 0; // 에러 시 댓글 수를 0으로 반환
+          });
+    },
+
     getPostList() {
       this.$axios
           .get("http://localhost:8080/api/post/list")
           .then((res) => {
-            console.log(res.status)
-            console.log(res.data)
-            this.gridData = res.data.map(item => ({...item, select: false}));
+            console.log(res.status);
+            console.log(res.data);
+            this.gridData = res.data;
+
+            const updateCommentCounts = this.gridData.map(async (item) => {
+              try {
+                const commentCount = await this.getCommentCount(item.post_no);
+                return {
+                  ...item,
+                  post_comment_cnt: commentCount,
+                };
+              } catch (error) {
+                console.error("댓글 수 가져오기 오류:", error);
+                return item;
+              }
+            });
+
+            Promise.all(updateCommentCounts)
+                .then((updatedItems) => {
+                  this.gridData = updatedItems;
+                })
+                .catch((error) => {
+                  console.error("댓글 수 업데이트 오류:", error);
+                });
+          })
+          .catch((error) => {
+            console.error("게시물 리스트 가져오기 오류:", error);
           });
     },
 
     goToBoardEditPage() {
-      this.$router.push('/edit')
+      this.$router.push('/edit');
     },
 
     goToEditMyPage() {
@@ -139,8 +132,37 @@ export default {
           user_pw: '',
         },
       });
-    }
+    },
+
+    registerComment(commentDto) {
+      this.$axios
+          .post("http://localhost:8080/api/comment/add", commentDto)
+          .then((res) => {
+            // 댓글이 삭제된 경우 서버 응답에서 댓글 카운트가 반환되지 않을 수 있음
+            const commentCount = res.data.commentCount || 0;
+
+            // 업데이트된 댓글 수로 gridData 업데이트
+            const postId = commentDto.post_no;
+            const updatedGridData = this.gridData.map((item) => {
+              if (item.post_no === postId) {
+                item.post_comment_cnt = commentCount;
+              }
+              return item;
+            });
+
+            // gridData 업데이트하여 반응성 활성화
+            this.gridData = [...updatedGridData];
+
+            // 댓글 등록 후 업데이트가 완료되면 그때 화면 갱신
+            this.$nextTick(() => {
+            });
+          })
+          .catch((error) => {
+            console.error("댓글 등록 오류:", error);
+          });
+    },
   },
+
   mounted() {
     this.gridInstance.on('click', (ev) => {
       const rowData = this.gridInstance.getRow(ev.rowKey);
@@ -155,9 +177,4 @@ export default {
 </script>
 
 <style>
-.bottom-left {
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-}
 </style>

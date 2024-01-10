@@ -12,16 +12,18 @@
     <div class="content-section">
       <h2>내용</h2>
       <div class="content" v-html="currentGridData.post_content"></div>
+      <h2>댓글</h2>
     </div>
-    <h2>댓글</h2>
-    <div v-if="currentGridData.comment" class="comment">
-      <div v-for="comment in currentGridData.comment" :key="comment.user_id" class="comment">
-        <div class="comment-content">
-          <p>{{ comment.comment_content }}</p>
+    <template v-if="hasComments">
+      <div v-for="comment in reversedComments" :key="comment.comment_no">
+        <div class="comment">
+          <div class="comment-content">
+            <p>{{ comment.comment_content }} | {{ comment.user_id }}</p>
+          </div>
+          <button @click="handleDeleteComment(comment.comment_no)">삭제</button>
         </div>
-        <button @click="handleDeleteComment(comment.user_id)">댓글 삭제</button>
       </div>
-    </div>
+    </template>
     <div class="comment-input">
       <textarea v-model="newComment" placeholder="댓글을 입력하세요."></textarea>
       <button @click="handleAddComment">댓글 추가</button>
@@ -36,40 +38,79 @@ export default {
   data() {
     return {
       newComment: '',
-      currentGridData: null,
+      currentGridData: {
+        post_no: 0,
+        post_title: '',
+        user_id: '',
+        post_content: '',
+        comment: [],
+      },
     };
+  },
+  computed: {
+    hasComments() {
+      return this.currentGridData.comment && this.currentGridData.comment.length > 0;
+    },
+    reversedComments() {
+      return this.currentGridData.comment.slice().reverse();
+    },
   },
   methods: {
     handleAddComment() {
       if (this.newComment && this.currentGridData) {
-        const listId = this.currentGridData.id;
-        axios.post(`/api/addComment/${listId}`, { listId: listId, comment_content: this.newComment })
+        const userId = localStorage.getItem('userId');
+        axios.post(`/api/comment/add`, { post_no: this.currentGridData.post_no, comment_content: this.newComment, user_id: userId })
             .then(response => {
-              this.currentGridData.comment_content.push(response.data);
-              this.newComment = '';
+              if (response.data) {
+                if (!this.currentGridData.comment) {
+                  this.$set(this.currentGridData, 'comment', []);
+                }
+                this.$set(this.currentGridData.comment, this.currentGridData.comment.length, response.data);
+                this.newComment = '';
+                this.fetchData();
+              } else {
+                console.error('댓글 추가 오류: 댓글이 제대로 반환되지 않았습니다.');
+              }
             })
             .catch(error => {
-              console.error('Error adding comment:', error);
+              console.error('댓글 추가 오류:', error);
             });
       }
     },
+
     fetchData() {
       const listId = this.$route.params.post_no;
+
       axios.get(`/api/post/${listId}`)
           .then(response => {
-            this.currentGridData = response.data;
+            if (response.data) {
+              this.currentGridData = response.data;
+
+              axios.get(`/api/comment/list/${listId}`)
+                  .then(response => {
+                    if (response.data && response.data.length > 0) {
+                      this.$set(this.currentGridData, 'comment', response.data);
+                    } else {
+                      this.$set(this.currentGridData, 'comment', []);
+                    }
+                  })
+                  .catch(error => {
+                    console.error('댓글 데이터 가져오기 오류:', error);
+                    this.$set(this.currentGridData, 'comment', []);
+                  });
+            } else {
+              console.error('게시물 데이터 가져오기 오류: 게시물이 제대로 반환되지 않았습니다.');
+            }
           })
           .catch(error => {
-            console.error('Error fetching data:', error);
-            console.error('Response data:', error.response.data);
+            console.error('게시물 데이터 가져오기 오류:', error);
           });
     },
-    refreshData() {
-      this.fetchData();
-    },
+
     goBack() {
       this.$router.go(-1);
     },
+
     goToPostEditPage() {
       const isAuthor = this.currentGridData.user_id === localStorage.getItem('userId');
       if (isAuthor) {
@@ -78,41 +119,66 @@ export default {
         alert('게시글 작성자만 수정할 수 있습니다.');
       }
     },
+
     handleDeletePost() {
-      const postId = this.currentGridData.post_no;
-      const isAuthor = this.currentGridData.user_id === localStorage.getItem('userId');
+      const userId = localStorage.getItem('userId');
+      const isAuthor = this.currentGridData.user_id === userId;
+
       if (!isAuthor) {
         alert('게시글 작성자만 삭제할 수 있습니다.');
         return;
       }
 
-      const postPw = prompt('게시글 삭제를 위해 패스워드를 입력하세요.');
-      if (postPw === null) {
-        // 사용자가 취소를 누른 경우
+      const confirmation = confirm('정말로 이 게시물을 삭제하시겠습니까?');
+      if (!confirmation) {
         return;
       }
 
-      if (postPw === this.currentGridData.post_pw) {
-        axios.delete(`/api/post/${postId}`)
-            .then(response => {
-              alert(response.data);
-              this.$router.go(-1);
-            })
-            .catch(error => {
-              console.error('게시글 삭제 오류:', error);
-              alert('게시글 삭제에 실패했습니다.');
-            });
-      } else {
-        alert('비밀번호가 일치하지 않습니다.');
-      }
+      axios.delete(`/api/post/${this.currentGridData.post_no}`)
+          .then(response => {
+            alert(response.data);
+            this.$router.go(-1);
+          })
+          .catch(error => {
+            console.error('게시물 삭제 오류:', error);
+            alert('게시물 삭제에 실패했습니다.');
+          });
     },
+
+    handleDeleteComment(commentId) {
+      const userId = localStorage.getItem('userId');
+      const isAuthor = this.currentGridData.comment.find(comment => comment.comment_no === commentId && comment.user_id === userId);
+
+      if (!isAuthor) {
+        alert('댓글 작성자만 삭제할 수 있습니다.');
+        return;
+      }
+
+      const confirmation = confirm('정말로 이 댓글을 삭제하시겠습니까?');
+      if (!confirmation) {
+        return;
+      }
+
+      axios.delete(`/api/comment/${commentId}`)
+          .then(response => {
+            alert(response.data);
+            // 댓글 삭제 후 현재 댓글 카운트를 1 감소시킴
+            this.currentGridData.post_comment_cnt -= 1;
+            // 현재 페이지 데이터 갱신
+            this.currentGridData.comment = this.currentGridData.comment.filter(comment => comment.comment_no !== commentId);
+          })
+          .catch(error => {
+            console.error('댓글 삭제 오류:', error);
+            alert('댓글 삭제에 실패했습니다.');
+          });
+    }
+
   },
   mounted() {
     this.fetchData();
-    this.$root.$on('refreshData', this.refreshData);
   },
 };
 </script>
 
-<style scoped>
+<style>
 </style>
