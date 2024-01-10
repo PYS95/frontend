@@ -138,19 +138,6 @@ export default {
           });
     },
 
-    // 댓글 등록 후 댓글 수를 업데이트하는 메서드
-    updateCommentCount(postId) {
-      const updatedGridData = this.gridData.map((item) => {
-        if (item.post_no === postId) {
-          item.post_comment_cnt += 1;
-        }
-        return item;
-      });
-
-      // 업데이트된 gridData로 갱신
-      this.gridData = [...updatedGridData];
-    },
-
   },
   mounted() {
     this.gridInstance.on('click', (ev) => {
